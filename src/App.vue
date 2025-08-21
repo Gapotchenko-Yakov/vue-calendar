@@ -7,6 +7,7 @@
   <calendar 
     :locale="lang"
     v-model="selectedDate"
+    @select="handleSelect"
   />
 </template>
 
@@ -18,6 +19,10 @@ import type { Language } from './types/locales';
 
 const lang = ref<Language>('en');
 const selectedDate = ref<Date | null>(null);
+
+function handleSelect(date: Date){
+  console.log("🚀 ~ App:handleSelect ~ date:", date)
+}
 </script>
 
 <style scoped>
