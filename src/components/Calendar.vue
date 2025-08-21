@@ -62,12 +62,18 @@
 
     const emit = defineEmits(['update:modelValue', 'select']);
 
-    const selectedDate = ref<Date | null>(null);
+    const selectedDate = computed({
+        get (): Date | null  {
+            return modelValue;
+        },
+        set (val: Date | null){
+            emit('update:modelValue', val);
+        }
+    });
     const displayedMonth = ref<number | null>(null);
     const displayedYear = ref<number | null>(null);
 
     if(modelValue){
-        selectedDate.value = modelValue;
         displayedMonth.value = modelValue.getMonth();
         displayedYear.value = modelValue.getFullYear();
     } else {
