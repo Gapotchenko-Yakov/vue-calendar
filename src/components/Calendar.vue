@@ -4,7 +4,6 @@
             <button
                 v-if="displayedMonth !== null"
                 @click="decreaseMonth"
-                :disabled="displayedMonth <= 0"
             >◀</button>
             <span>
                 {{ displayedMonth }} {{ displayedYear }}
@@ -12,7 +11,6 @@
             <button
                 v-if="displayedMonth !== null"
                 @click="increaseMonth"
-                :disabled="displayedMonth >= 11"
             >▶</button>
         </div>
         <div class="weekdays">
