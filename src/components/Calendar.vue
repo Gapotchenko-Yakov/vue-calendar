@@ -1,17 +1,13 @@
 <template>
-    <div class="container">
+    <div class="container" v-if="displayedYear !== null && displayedMonth !== null && selectedDate !== null">
         <div class="month-year">
             <button
-                v-if="displayedMonth !== null"
                 @click="decreaseMonth"
             >◀</button>
-            <span
-                v-if="displayedMonth !== null"
-            >
+            <span>
                 {{ months[displayedMonth] }} {{ displayedYear }}
             </span>
             <button
-                v-if="displayedMonth !== null"
                 @click="increaseMonth"
             >▶</button>
         </div>
@@ -26,14 +22,12 @@
         </div>
         <div class="calendar-grid">
             <span
-                v-if="displayedYear !== null && displayedMonth !== null && selectedDate !== null "
                 v-for="n in getDaysOffset(displayedYear, displayedMonth)"
                 class="day-offset"
                 :key="n"
                 >
             </span>
             <button
-                v-if="displayedYear !== null && displayedMonth !== null && selectedDate !== null "
                 v-for="day in getDaysInMonth(displayedYear, displayedMonth)"
                 @click="changeDate(day)"
                 :class="`day-button ${formatDate(new Date(displayedYear, displayedMonth, day)) === formatDate(selectedDate) ? 'day__selected' : null}`"
@@ -42,6 +36,9 @@
                 {{ day }}
             </button>
         </div>
+    </div>
+    <div class="loader" v-else>
+        Loading...
     </div>
 </template>
 
