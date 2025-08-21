@@ -88,6 +88,8 @@
         return (firstDay + 6) % 7;
     }
 
+     // TODO: maybe "2025-0-2" - use padStart for future and increase month by 1, 
+     // now it acceptable because it used only for inner comparation
     function formatDate(date: Date) {
         return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
     }
