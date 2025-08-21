@@ -6,6 +6,7 @@
   />
   <calendar 
     :locale="lang"
+    v-model="selectedDate"
   />
 </template>
 
@@ -16,6 +17,7 @@ import LangSwitcher from './components/LangSwitcher.vue'
 import type { Language } from './types/locales';
 
 const lang = ref<Language>('en');
+const selectedDate = ref<Date | null>(null);
 </script>
 
 <style scoped>

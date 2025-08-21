@@ -51,7 +51,7 @@
     import type { Language } from '../types/locales';
 
     interface CalendarProps {
-        modelValue?: Date,
+        modelValue: Date | null,
         locale?: Language,
     }
 
