@@ -16,11 +16,12 @@ import { ref } from 'vue';
 import Calendar from './components/Calendar.vue'
 import LangSwitcher from './components/LangSwitcher.vue'
 import type { Language } from './types/locales';
+import type { CalendarDateString } from './types/calendar';
 
 const lang = ref<Language>('en');
-const selectedDate = ref<Date | null>(null);
+const selectedDate = ref<CalendarDateString | null>(null);
 
-function handleSelect(date: Date){
+function handleSelect(date: CalendarDateString){
   console.log("🚀 ~ App:handleSelect ~ date:", date)
 }
 </script>

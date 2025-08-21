@@ -1,5 +1,5 @@
 <template>
-    <div class="calendar" v-if="displayedYear !== null && displayedMonth !== null && selectedDate !== null">
+    <div class="calendar" >
         <div class="calendar__header">
             <button
                 @click="decreaseMonth"
@@ -24,7 +24,7 @@
             <span
                 v-for="n in getDaysOffset(displayedYear, displayedMonth)"
                 class="calendar__spacing"
-                :key="n"
+                :key="'offset-' + n"
                 >
             </span>
             <button
@@ -32,7 +32,10 @@
                 @click="changeDate(day)"
                 :class="[
                     'calendar__day', {
-                    'calendar__day--selected': formatDate(new Date(displayedYear, displayedMonth, day)) === formatDate(selectedDate)
+                    'calendar__day--selected': 
+                        displayedYear === selectedDate.getFullYear() 
+                        && displayedMonth === selectedDate.getMonth() 
+                        && day === selectedDate.getDate()
                     }]"
                 :key="day"
                 >
@@ -40,18 +43,16 @@
             </button>
         </div>
     </div>
-    <div class="loader" v-else>
-        Loading...
-    </div>
 </template>
 
 <script setup lang="ts">
     import { computed, ref } from 'vue';
     import {locales} from '../utils/locale'
     import type { Language } from '../types/locales';
+    import type { CalendarDateString } from '../types/calendar';
 
     interface CalendarProps {
-        modelValue: Date | null,
+        modelValue: CalendarDateString | null,
         locale?: Language,
     }
 
@@ -62,25 +63,13 @@
 
     const emit = defineEmits(['update:modelValue', 'select']);
 
-    const selectedDate = computed({
-        get (): Date | null  {
-            return modelValue;
-        },
-        set (val: Date | null){
-            emit('update:modelValue', val);
-        }
-    });
-    const displayedMonth = ref<number | null>(null);
-    const displayedYear = ref<number | null>(null);
+    const initialDate = modelValue ? new Date(modelValue) : new Date();
+    const selectedDate = ref<Date>(initialDate);
+    const displayedMonth = ref<number>(initialDate.getMonth());
+    const displayedYear = ref<number >(initialDate.getFullYear());
 
-    if(modelValue){
-        displayedMonth.value = modelValue.getMonth();
-        displayedYear.value = modelValue.getFullYear();
-    } else {
-        const today = new Date();
-        selectedDate.value = today;
-        displayedMonth.value = today.getMonth();
-        displayedYear.value = today.getFullYear();
+    if(!modelValue){
+        emit('update:modelValue', formatDate(initialDate));
     }
 
     function getDaysInMonth(year: number, month: number): number{
@@ -93,10 +82,11 @@
         return (firstDay + 6) % 7;
     }
 
-     // TODO: maybe "2025-0-2" - use padStart for future and increase month by 1, 
-     // now it acceptable because it used only for inner comparation
-    function formatDate(date: Date) {
-        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    function formatDate(date: Date): CalendarDateString {
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}` as CalendarDateString;
     }
     
     const locale = computed(() => propsLocale ?? 'en');
@@ -104,32 +94,27 @@
     const weekdays = computed(() => locales[locale.value].weekdays)
 
     function changeDate(day: number) {
-        if(displayedYear.value !== null && displayedMonth.value !== null){
-            const date = new Date(displayedYear.value, displayedMonth.value, day);
-            selectedDate.value = date;
-            emit('select', date);
-        }
+        const date = new Date(displayedYear.value, displayedMonth.value, day);
+        selectedDate.value = date;
+        emit('update:modelValue', formatDate(date));
+        emit('select', formatDate(date));
     }
 
     function increaseMonth(){
-        if(displayedMonth.value !== null && displayedYear.value !== null){
-            if(displayedMonth.value <= 10)
-                displayedMonth.value++;
-            else {
-                displayedYear.value++;
-                displayedMonth.value = 0;
-            }
+        if(displayedMonth.value <= 10)
+            displayedMonth.value++;
+        else {
+            displayedYear.value++;
+            displayedMonth.value = 0;
         }
     }
 
     function decreaseMonth(){
-        if(displayedMonth.value !== null && displayedYear.value !== null){
-            if(displayedMonth.value >= 1)
-                displayedMonth.value--;
-            else {
-                displayedYear.value--;
-                displayedMonth.value = 11;
-            }
+        if(displayedMonth.value >= 1)
+            displayedMonth.value--;
+        else {
+            displayedYear.value--;
+            displayedMonth.value = 11;
         }
     }
 </script>
