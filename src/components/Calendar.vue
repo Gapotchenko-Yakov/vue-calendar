@@ -25,8 +25,9 @@
         <div class="calendar-grid">
             <span
                 v-if="displayedYear !== null && displayedMonth !== null && selectedDate !== null "
-                v-for="day in getDaysOffset(displayedYear, displayedMonth)"
+                v-for="n in getDaysOffset(displayedYear, displayedMonth)"
                 class="day-offset"
+                :key="n"
                 >
             </span>
             <button
@@ -34,6 +35,7 @@
                 v-for="day in getDaysInMonth(displayedYear, displayedMonth)"
                 @click="changeDate(day)"
                 :class="`day-button ${formatDate(new Date(displayedYear, displayedMonth, day)) === formatDate(selectedDate) ? 'day__selected' : null}`"
+                :key="day"
                 >
                 {{ day }}
             </button>
