@@ -79,7 +79,6 @@
     } else {
         const today = new Date();
         selectedDate.value = today;
-        emit('update:modelValue', today);
         displayedMonth.value = today.getMonth();
         displayedYear.value = today.getFullYear();
     }
@@ -108,7 +107,6 @@
         if(displayedYear.value !== null && displayedMonth.value !== null){
             const date = new Date(displayedYear.value, displayedMonth.value, day);
             selectedDate.value = date;
-            emit('update:modelValue', date);
             emit('select', date);
         }
     }
