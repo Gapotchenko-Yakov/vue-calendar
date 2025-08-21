@@ -94,9 +94,7 @@
     
     const locale = computed(() => propsLocale ?? 'en');
     const months = computed(() => locales[locale.value].months)
-    console.log("🚀 ~ months:", months.value)
     const weekdays = computed(() => locales[locale.value].weekdays)
-    console.log("🚀 ~ weekdays:", weekdays.value)
 
     function changeDate(day: number) {
         if(displayedYear.value !== null && displayedMonth.value !== null){
