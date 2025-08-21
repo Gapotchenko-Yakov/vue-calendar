@@ -5,8 +5,10 @@
                 v-if="displayedMonth !== null"
                 @click="decreaseMonth"
             >◀</button>
-            <span>
-                {{ displayedMonth }} {{ displayedYear }}
+            <span
+                v-if="displayedMonth !== null"
+            >
+                {{ months[displayedMonth] }} {{ displayedYear }}
             </span>
             <button
                 v-if="displayedMonth !== null"
@@ -15,7 +17,7 @@
         </div>
         <div class="weekdays">
             <span
-                v-for="weekday in weekdaysShort"
+                v-for="weekday in weekdays"
                 :key="weekday"
                 class="weekday"
             >
@@ -44,15 +46,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+    import { computed, ref } from 'vue';
+    import {locales} from '../utils/locale'
+    import type { Language } from '../types/locales';
+
+    interface CalendarProps {
+        modelValue?: Date,
+        locale?: Language,
+    }
 
     const {
         modelValue,
-    } = defineProps({
-        modelValue: {
-            type: Date,
-        },
-    });
+        locale: propsLocale,
+    } = defineProps<CalendarProps>();
 
     const emit = defineEmits(['update:modelValue', 'select']);
 
@@ -86,7 +92,11 @@ import { ref } from 'vue';
         return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
     }
     
-    const weekdaysShort = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const locale = computed(() => propsLocale ?? 'en');
+    const months = computed(() => locales[locale.value].months)
+    console.log("🚀 ~ months:", months.value)
+    const weekdays = computed(() => locales[locale.value].weekdays)
+    console.log("🚀 ~ weekdays:", weekdays.value)
 
     function changeDate(day: number) {
         if(displayedYear.value !== null && displayedMonth.value !== null){
