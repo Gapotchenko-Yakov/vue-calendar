@@ -1,6 +1,6 @@
 <template>
-    <div class="container" v-if="displayedYear !== null && displayedMonth !== null && selectedDate !== null">
-        <div class="month-year">
+    <div class="calendar" v-if="displayedYear !== null && displayedMonth !== null && selectedDate !== null">
+        <div class="calendar__header">
             <button
                 @click="decreaseMonth"
             >◀</button>
@@ -11,7 +11,7 @@
                 @click="increaseMonth"
             >▶</button>
         </div>
-        <div class="weekdays">
+        <div class="calendar__weekdays">
             <span
                 v-for="weekday in weekdays"
                 :key="weekday"
@@ -20,17 +20,20 @@
                 {{ weekday }}
             </span>
         </div>
-        <div class="calendar-grid">
+        <div class="calendar__grid">
             <span
                 v-for="n in getDaysOffset(displayedYear, displayedMonth)"
-                class="day-offset"
+                class="calendar__spacing"
                 :key="n"
                 >
             </span>
             <button
                 v-for="day in getDaysInMonth(displayedYear, displayedMonth)"
                 @click="changeDate(day)"
-                :class="`day-button ${formatDate(new Date(displayedYear, displayedMonth, day)) === formatDate(selectedDate) ? 'day__selected' : null}`"
+                :class="[
+                    'calendar__day', {
+                    'calendar__day--selected': formatDate(new Date(displayedYear, displayedMonth, day)) === formatDate(selectedDate)
+                    }]"
                 :key="day"
                 >
                 {{ day }}
@@ -128,26 +131,26 @@
 </script>
 
 <style scoped>
- .container {
+ .calendar {
     display: flex;
     flex-direction: column;
     min-width: 240px;
     height: 320px;
  }
 
-  .month-year {
+  .calendar__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
  }
 
- .weekdays {
+ .calendar__weekdays {
     display: flex;
     justify-content: space-around;
     align-items: center;
  }
 
- .calendar-grid {
+ .calendar__grid {
     background-color: #ccc;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -157,7 +160,7 @@
     padding: 4px;
  }
 
- .day__selected {
+ .calendar__day--selected {
     background-color: blueviolet;
  }
 </style>
