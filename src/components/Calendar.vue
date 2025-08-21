@@ -25,11 +25,17 @@
             </span>
         </div>
         <div class="calendar-grid">
+            <span
+                v-if="displayedYear !== null && displayedMonth !== null && selectedDate !== null "
+                v-for="day in getDaysOffset(displayedYear, displayedMonth)"
+                class="day-offset"
+                >
+            </span>
             <button
                 v-if="displayedYear !== null && displayedMonth !== null && selectedDate !== null "
                 v-for="day in getDaysInMonth(displayedYear, displayedMonth)"
                 @click="changeDate(day)"
-                :class="formatDate(new Date(displayedYear, displayedMonth, day)) === formatDate(selectedDate) ? 'day__selected' : null"
+                :class="`day-button ${formatDate(new Date(displayedYear, displayedMonth, day)) === formatDate(selectedDate) ? 'day__selected' : null}`"
                 >
                 {{ day }}
             </button>
@@ -70,6 +76,12 @@ import { ref } from 'vue';
         return new Date(year, month + 1, 0).getDate();
     }
 
+
+    function getDaysOffset(year: number, month: number): number{
+        const firstDay = new Date(year, month, 1).getDay();
+        return (firstDay + 6) % 7;
+    }
+
     function formatDate(date: Date) {
         return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
     }
@@ -87,7 +99,7 @@ import { ref } from 'vue';
 
     function increaseMonth(){
         if(displayedMonth.value !== null && displayedYear.value !== null){
-            if(displayedMonth.value <=10)
+            if(displayedMonth.value <= 10)
                 displayedMonth.value++;
             else {
                 displayedYear.value++;
